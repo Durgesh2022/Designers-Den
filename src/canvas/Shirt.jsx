@@ -37,7 +37,7 @@ const Shirt = () => {
         material-roughness={1}
         dispose={null}
       >
-        {snap.isFullTexture && (
+        {snap.isFullTexture && !snap.logoText && !snap.pocketLogoText && !snap.backLogoText && (
           <Decal
             position={[0, 0, 0]}
             rotation={[0, 0, 0]}
@@ -48,23 +48,35 @@ const Shirt = () => {
 
         {snap.isLogoTexture && (
           <>
-            {/* Main Logo */}
-            <Decal
-              position={[0, 0.0, 0.15]} // Position for main logo
-              rotation={[0, 0, 0]}
-              scale={0.15}
-              map={logoTexture}
-              map-anisotropy={16}
-              depthTest={false}
-              depthWrite={true}
-            />
-
-            {/* Pocket Logo Overlaying the Main Logo */}
-            {snap.isLogoTexture && (
+            {/* Main Logo or Text */}
+            {snap.logoText ? (
+              <mesh position={[0, 0.0, 0.15]}>
+                <textGeometry attach="geometry" args={[snap.logoText, { size: 0.05, height: 0.01 }]} />
+                <meshStandardMaterial color={snap.color} attach="material" />
+              </mesh>
+            ) : (
               <Decal
-                position={[0.10, 0.12, 0.10]} // Slightly above the main logo for overlay
+                position={[0, 0.0, 0.15]}
                 rotation={[0, 0, 0]}
-                scale={0.06} // Smaller scale for pocket logo
+                scale={0.15}
+                map={logoTexture}
+                map-anisotropy={16}
+                depthTest={false}
+                depthWrite={true}
+              />
+            )}
+
+            {/* Pocket Logo or Text */}
+            {snap.pocketLogoText ? (
+              <mesh position={[0.10, 0.12, 0.10]}>
+                <textGeometry attach="geometry" args={[snap.pocketLogoText, { size: 0.03, height: 0.01 }]} />
+                <meshStandardMaterial color={snap.color} attach="material" />
+              </mesh>
+            ) : (
+              <Decal
+                position={[0.10, 0.12, 0.10]}
+                rotation={[0, 0, 0]}
+                scale={0.06}
                 map={pocketLogoTexture}
                 map-anisotropy={16}
                 depthTest={false}
@@ -74,8 +86,13 @@ const Shirt = () => {
           </>
         )}
 
-        {/* Back Logo */}
-        {snap.isLogoTexture && (
+        {/* Back Logo or Text */}
+        {snap.backLogoText ? (
+          <mesh position={[0, -12, -0.15]}>
+            <textGeometry attach="geometry" args={[snap.backLogoText, { size: 0.05, height: 0.01 }]} />
+            <meshStandardMaterial color={snap.color} attach="material" />
+          </mesh>
+        ) : (
           <Decal
             position={[0, 0.04, -0.15]}
             rotation={[0, Math.PI, 0]}
